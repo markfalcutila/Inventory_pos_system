@@ -9,6 +9,7 @@ import { CategoryController } from "../controller/Category-controller";
 import { StockMovementController } from "../controller/Stock-movements";
 import { SaleItemsController } from "../controller/Sale-items-controller";
 import { authenticateToken } from "../middleware/authMiddleware";
+import { AuthController } from "../controller/auth-controller";
 
 // authentication
 
@@ -22,8 +23,15 @@ const salesController = new SalesController();
 const supplierController = new SupplierController(); 
 const stockMovementController = new StockMovementController();
 const saleItemsController = new SaleItemsController();
+const authController = new AuthController();
+
+// get token
+router.post("/getToken", authController.getToken);
 
 router.use(authenticateToken);
+
+// login
+router.post("/login", authController.login);
 
 // Product routes
 router.post("/getProducts", productController.getProducts);

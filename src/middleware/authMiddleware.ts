@@ -12,6 +12,9 @@ export const authenticateToken  = (req: Request, res: Response, next: NextFuncti
         return;
     }
 
+    console.log(authHeader)    
+    console.log(token)    
+    
     try{
          const decoded = jwt.verify(token, JWT_SECRET);
          (req as any).user = decoded; // Attach user info to request object
