@@ -1,37 +1,21 @@
+<!-- install dependencies  -->
+npm install 
 
-<!-- install required packages :  -->
+<!-- Create a MySQL database with the following name:  -->
+db name: inventory_pos
 
-npm install typeorm reflect-metadata mysql2 express
-npm install -D typescript ts-node @types/node @types/express
+<!-- Generate TypeORM migration (if needed) -->
+npm run migration:generate
 
- <!-- 11. Generate and Run Migration -->
-npm install -D ts-node typeorm
+<!-- run migrations -->
+npm run migration:run
 
-================================
+<!-- Seed the database with default data -->
+npm run seed
 
-<!-- c. Generate migration -->
-npx typeorm migration:generate src/migration/ProductInit -d src/ormconfig.ts
-<!-- d. Run migration -->
-npx typeorm migration:run -d ormconfig.ts
+<!-- Start the application-->
+npm run start
 
-<!-- OR RUN THE SCRIPT THAT DECLARE IN PACKAGE JSON -->
-migration:generate
-migration:run
-
-=================
-
-
-dify an already-run migration file?
-TypeORM will not re-run it, because the filename is already logged in the DB.
-
-This is dangerous. You should:
-
-Avoid editing already-run migration files.
-
-If needed, revert the migration using:
-
-bash
-Copy
-Edit
-npm run migration:revert
-Then make changes and regenerate a new migration file.
+<!-- Use this link to access the Postman collection and test the API endpoints:    -->
+postman collection link: 
+https://documenter.getpostman.com/view/33766121/2sB2qUmjeW
