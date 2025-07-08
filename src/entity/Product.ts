@@ -16,6 +16,9 @@ export class Product extends BaseEntity {
     @Column({ type: "varchar", length: 255 })
     barcode!: string;
 
+    @Column( { name: 'category_id' })
+    category_id!: number;
+
     @ManyToOne(() => Category, { nullable: false })
     @JoinColumn({ name: "category_id" })
     category!: Category;

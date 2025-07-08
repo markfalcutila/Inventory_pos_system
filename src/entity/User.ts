@@ -15,6 +15,10 @@ export class User extends BaseEntity {
     @Column({ type: "varchar", length: 255 })
     password!: string;
 
+    // This column will be included in SELECTs
+    @Column({ name: 'role_id' })
+    role_id!: number;
+
     @ManyToOne(() => Role, { nullable: false })  // Add nullable: false to ensure role is mandatory
     @JoinColumn({ name: "role_id" })  // Specify the foreign key column
     role!: Role;

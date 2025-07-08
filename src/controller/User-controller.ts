@@ -10,8 +10,13 @@ export class UserController {
     async getUsers(req: Request, res: Response){
         try{
             const users = await User.find();
-            res.json(users);
-            res.status(200).json({"code": "200", "message": "Users fetched successfully", users});
+            // const users = await User.find({ relations: ['role']});
+
+            res.status(200).json({
+                code: "200",
+                message: "Users fetched successfully",
+                data: users
+            });
             console.log("Users fetched successfully:", users);
             
         }catch(error){
@@ -24,21 +29,32 @@ export class UserController {
     async createUser(req: Request, res: Response){
         const { username, name, password , role, status } = req.body;
         const hashedPassword = await hashPassword(password);
+        console.log(req.body)
+
         try{
-            const newUser = User.create({ username, name, password: hashedPassword, role, status });
             const findRole = await Role.findOneBy({ id: Number(role) });
-            if (findRole){
-                await newUser.save();
-                res.status(201).json({"code": "201", "message": "User created successfully", newUser});
-                console.log("User created successfully:", newUser);
-            }else{
-                res.status(404).json({ message: "Role not found" });
+            if (!findRole) {
                 console.log("Role not found:", role);
+                res.status(404).json({ message: "Role not found" });
+                return; // Stop execution if role not found
             }
 
+            const newUser = User.create({ 
+                username, 
+                name, 
+                password: hashedPassword, 
+                role: findRole, 
+                role_id: findRole.id, 
+                status 
+            });
+           
+            await newUser.save();
+            console.log("User created successfully:", newUser);
+            res.status(201).json({ code: "201", message: "User created successfully", newUser });
+
         } catch(error){
-            res.status(500).json({ message: "Error creating user", error });
             console.error("Error creating user:", error);
+            res.status(500).json({ message: "Error creating user", error });
         }
     }
 
@@ -46,13 +62,22 @@ export class UserController {
     async updateUser(req: Request, res: Response){
         const { id, username, name, password , role, status } = req.body;
         const hashedPassword = await hashPassword(password);
+        console.log( "Updating user with ID:", req.body);
         try{
+            const findRole = await Role.findOneBy({ id: Number(role) });
+            if (!findRole) {
+                console.log("Role not found:", role);
+                res.status(404).json({ message: "Role not found" });
+                return; // Stop execution if role not found
+            }
+
             const user = await User.findOneBy({ id: Number(id) });
             if (user){
                 user.username = username;
                 user.name = name;       
                 user.password = hashedPassword;
-                user.role = role;
+                user.role = findRole;
+                user.role_id = findRole.id;
                 user.status = status;
                 await user.save();
                 res.status(200).json({"code": "200", "message": "User updated successfully", user});
@@ -85,6 +110,24 @@ export class UserController {
         }catch(error){
             res.status(500).json({ message: "Error deleting user", error });
             console.error("Error deleting user:", error);
+        }
+    }
+
+    // get user by id
+    async getUserById(req: Request, res: Response) {
+        const { id } = req.body;
+        try {
+            const user = await User.findOneBy({ id: Number(id) });
+            if (user) {
+                res.status(200).json({ code: "200", message: "User fetched successfully", data: user });
+                console.log("User fetched successfully:", user);
+            } else {
+                res.status(404).json({ message: "User not found" });
+                console.log("User not found:", id);
+            }
+        } catch (error) {
+            res.status(500).json({ message: "Error fetching user", error });
+            console.error("Error fetching user:", error);
         }
     }
 }

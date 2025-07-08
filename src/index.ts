@@ -4,10 +4,15 @@ import dotenv from "dotenv";
 import { AppDataSource } from "./ormconfig";
 import productRoutes from "./routes/routes";
 
+const cors = require('cors');
+
 // Load .env file contents into process.env
 dotenv.config();
 
 const app = express();
+
+// enable cors for all routes
+app.use(cors());
 
 // Use port from .env or default to 3000
 const port = process.env.PORT || 3000;

@@ -28,14 +28,16 @@ const authController = new AuthController();
 // get token
 router.post("/getToken", authController.getToken);
 
-router.use(authenticateToken);
 
 // login
 router.post("/login", authController.login);
 
+router.use(authenticateToken);
+
+
 // Product routes
 router.post("/getProducts", productController.getProducts);
-router.get("/getProductById", productController.getProductById);
+router.post("/getProductById", productController.getProductById);
 
 router.post("/createProduct", productController.createProduct);
 router.post("/updateProduct", productController.updateProduct);
@@ -53,6 +55,7 @@ router.post("/getUsers", userController.getUsers);
 router.post("/createUser", userController.createUser);
 router.post("/updateUser", userController.updateUser);
 router.post("/deleteUser", userController.deleteUser);
+router.post("/getUserById", userController.getUserById);
 
 // category routes
 router.post("/getCategories", categoryController.getCategories);

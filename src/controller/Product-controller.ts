@@ -7,7 +7,12 @@ export class ProductController {
   async getProducts(req: Request, res: Response){
     try{
       const products = await Product.find();
-      res.json(products);
+      // res.json(products);
+      res.status(200).json({
+                code: "200",
+                message: "Products fetched successfully",
+                data: products
+            });
       console.log("Products fetched successfully:", products);
 
     } catch(error){
@@ -23,7 +28,11 @@ export class ProductController {
     try{
       const product = await Product.findOneBy({ id: Number(id) });
       if (product){
-        res.json(product);
+        res.status(200).json({
+                code: "200",
+                message: "Products fetched successfully",
+                data: product
+            });
         console.log("Product fetched successfully:", product);
       }else{
         res.status(404).json({ message: "Product not found" });
@@ -38,10 +47,10 @@ export class ProductController {
   // create product
 
   async createProduct(req: Request, res: Response){
-      const { name, sku, barcode, category, price, cost, stock, unit, is_active } = req.body; 
+      const { name, sku, barcode, category_id, price, cost, stock, unit, is_active } = req.body; 
 
     try{ 
-      const newProduct = Product.create({ name, sku, barcode, category, price, cost, stock, unit, is_active });
+      const newProduct = Product.create({ name, sku, barcode, category_id, price, cost, stock, unit, is_active });
       const findProduct = await Product.findOneBy({ sku: sku });
       if (findProduct){
         res.status(409).json({ message: "Product already exists" });
